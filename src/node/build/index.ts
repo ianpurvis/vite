@@ -537,7 +537,9 @@ async function doBuild(options: Partial<BuildConfig>): Promise<BuildResult[]> {
       }),
       // vite:worker
       createWorkerBuildPlugin({
-        include: /(.+)\?worker$/
+        include: /(.+)\?worker$/,
+        publicBasePath,
+        assetsDir
       }),
       // vite:wasm
       createBuildWasmPlugin(root, publicBasePath, assetsDir, assetsInlineLimit),

@@ -1,18 +1,27 @@
+import { join } from 'path'
 import { Plugin } from 'rollup'
 import { createFilter, FilterPattern } from '@rollup/pluginutils'
+import slash from 'slash'
 import * as workerHelper from '../utils/workerHelper'
 import { injectAssetRe } from './buildPluginAsset'
+
+const debug = require('debug')('vite:build:worker')
 
 export interface WorkerBuildPluginOptions {
   include?: FilterPattern
   exclude?: FilterPattern
+  publicBasePath: string
+  assetsDir: string
 }
 
 export const createWorkerBuildPlugin = ({
   include,
-  exclude
+  exclude,
+  publicBasePath,
+  assetsDir
 }: WorkerBuildPluginOptions): Plugin => {
   const filter = createFilter(include, exclude)
+  const referenceIds = new Map<string, string>()
 
   return {
     name: 'vite:worker',
@@ -40,12 +49,26 @@ export const createWorkerBuildPlugin = ({
         url = `import.meta.VITE_INLINABLE_URL_${referenceId}`
       }
 
+      referenceIds.set(id, referenceId)
+
       return `
 import initWorker from "${workerHelper.id}"
 export default function WrappedWorker() {
   return initWorker(${url})
 }
 `
+    },
+
+    renderChunk(code, chunk) {
+      for (const id in chunk.modules) {
+        const referenceId = referenceIds.get(id)
+        if (referenceId) {
+          const fileName = this.getFileName(referenceId)
+          const url = slash(join(publicBasePath, assetsDir, fileName))
+          debug(`${id} => ${url}`)
+        }
+      }
+      return null
     }
   }
 }
