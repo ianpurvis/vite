@@ -710,6 +710,13 @@ describe('vite', () => {
           'pong'
         )
       })
+
+      test('should support file assets', async () => {
+        await expectByPolling(
+          () => getText('.worker-asset-content'),
+          /^🍄{1024}$/u
+        )
+      })
     })
 
     test('importing wasm', async () => {

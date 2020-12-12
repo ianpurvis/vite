@@ -8,6 +8,9 @@
 
       <dt>Inlinable asset content should be "pong" -> </dt>
       <dd class="worker-inlinable-asset-content">{{ result.inlinableAssetContent }}</dd>
+
+      <dt>Asset content should be "🍄" x 1024 -> </dt>
+      <dd class="worker-asset-content">{{ result.assetContent }}</dd>
     </dl>
   </p>
 </template>
@@ -20,7 +23,8 @@ export default {
   setup() {
     const result = reactive({
       protocol: null,
-      inlinableAssetContent: null
+      inlinableAssetContent: null,
+      assetContent: null
     })
 
     const worker = new Worker()
