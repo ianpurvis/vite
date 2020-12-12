@@ -1,22 +1,22 @@
 <template>
   <p>
-    <button class="test-worker" @click="test">Click to test worker</button>
+    <button class="test-inlinable-worker" @click="test">Click to test inlinable worker</button>
     <dl>
-      <dt>Protocol should be "http:" when served and "http:" when built -> </dt>
-      <dd class="worker-protocol">{{ result.protocol }}</dd>
+      <dt>Protocol should be "http:" when served and "blob:" when built -> </dt>
+      <dd class="inlinable-worker-protocol">{{ result.protocol }}</dd>
 
       <dt>Inlinable asset content should be "pong" -> </dt>
-      <dd class="worker-inlinable-asset-content">{{ result.inlinableAssetContent }}</dd>
+      <dd class="inlinable-worker-inlinable-asset-content">{{ result.inlinableAssetContent }}</dd>
 
       <dt>Asset content should be "🍄" x 1024 -> </dt>
-      <dd class="worker-asset-content">{{ result.assetContent }}</dd>
+      <dd class="inlinable-worker-asset-content">{{ result.assetContent }}</dd>
     </dl>
   </p>
 </template>
 
 <script>
 import { reactive } from 'vue'
-import Worker from './worker?worker'
+import Worker from './inlinable-worker?worker'
 
 export default {
   setup() {

@@ -694,15 +694,9 @@ describe('vite', () => {
     describe('web workers', () => {
       beforeAll(async () => click('.test-worker'))
 
-      if (isBuild) {
-        test('should be inlined', async () => {
-          await expectByPolling(() => getText('.worker-protocol'), 'blob:')
-        })
-      } else {
-        test('should not be inlined', async () => {
-          await expectByPolling(() => getText('.worker-protocol'), 'http:')
-        })
-      }
+      test('should not be inlined', async () => {
+        await expectByPolling(() => getText('.worker-protocol'), 'http:')
+      })
 
       test('should support inline assets', async () => {
         await expectByPolling(
@@ -717,6 +711,33 @@ describe('vite', () => {
           /^🍄{1024}$/u
         )
       })
+
+      if (isBuild) {
+        describe('inlinable', () => {
+          beforeAll(async () => click('.test-inlinable-worker'))
+
+          test('should be inlined', async () => {
+            await expectByPolling(
+              () => getText('.inlinable-worker-protocol'),
+              'blob:'
+            )
+          })
+
+          test('should support inline assets', async () => {
+            await expectByPolling(
+              () => getText('.inlinable-worker-inlinable-asset-content'),
+              'pong'
+            )
+          })
+
+          test('should support file assets', async () => {
+            await expectByPolling(
+              () => getText('.inlinable-worker-asset-content'),
+              /^🍄{1024}$/u
+            )
+          })
+        })
+      }
     })
 
     test('importing wasm', async () => {
