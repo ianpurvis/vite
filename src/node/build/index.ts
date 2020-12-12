@@ -34,6 +34,7 @@ import { createBuildJsTransformPlugin } from '../transform'
 import hash_sum from 'hash-sum'
 import { resolvePostcssOptions, isCSSRequest } from '../utils/cssUtils'
 import { createBuildWasmPlugin } from './buildPluginWasm'
+import { createWorkerBuildPlugin } from './buildPluginWorker'
 import { createBuildManifestPlugin } from './buildPluginManifest'
 import { stopService } from '../esbuildService'
 
@@ -166,6 +167,7 @@ export async function createBaseRollupPlugins(
   } = options
   const { nodeResolve } = require('@rollup/plugin-node-resolve')
   const dynamicImport = require('rollup-plugin-dynamic-import-variables')
+  const { default: fork } = await import('rollup-plugin-fork')
 
   return [
     // vite:resolve
@@ -198,6 +200,18 @@ export async function createBaseRollupPlugins(
       warnOnError: true,
       include: [/\.js$/],
       exclude: [/node_modules/]
+    }),
+    fork({
+      include: /(.+)\?worker$/,
+      inputOptions: ({ plugins = [], ...options }) => ({
+        ...options,
+        plugins: plugins.filter((p) => p.name != 'vite:manifest')
+      }),
+      outputOptions: ({ chunkFileNames, ...options }) => ({
+        ...options,
+        entryFileNames: chunkFileNames,
+        format: 'iife'
+      })
     })
   ].filter(Boolean)
 }
@@ -435,21 +449,6 @@ async function doBuild(options: Partial<BuildConfig>): Promise<BuildResult[]> {
 
   const basePlugins = await createBaseRollupPlugins(root, resolver, config)
 
-  // https://github.com/darionco/rollup-plugin-web-worker-loader
-  // configured to support `import Worker from './my-worker?worker'`
-  // this plugin relies on resolveId and must be placed before node-resolve
-  // since the latter somehow swallows ids with query strings since 8.x
-  basePlugins.splice(
-    basePlugins.findIndex((p) => p.name.includes('node-resolve')),
-    0,
-    require('rollup-plugin-web-worker-loader')({
-      targetPlatform: 'browser',
-      pattern: /(.+)\?worker$/,
-      extensions: supportedExts,
-      sourcemap: false // it's inlined so it bloats the bundle
-    })
-  )
-
   // user env variables loaded from .env files.
   // only those prefixed with VITE_ are exposed.
   const userClientEnv: Record<string, string | boolean> = {}
@@ -534,6 +533,10 @@ async function doBuild(options: Partial<BuildConfig>): Promise<BuildResult[]> {
         cssCodeSplit: config.cssCodeSplit,
         preprocessOptions: config.cssPreprocessOptions,
         modulesOptions: config.cssModuleOptions
+      }),
+      // vite:worker
+      createWorkerBuildPlugin({
+        include: /(.+)\?worker$/
       }),
       // vite:wasm
       createBuildWasmPlugin(root, publicBasePath, assetsDir, assetsInlineLimit),

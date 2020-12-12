@@ -5822,6 +5822,13 @@ rollup-plugin-dynamic-import-variables@^1.1.0:
     globby "^11.0.0"
     magic-string "^0.25.7"
 
+rollup-plugin-fork@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-fork/-/rollup-plugin-fork-1.0.1.tgz#df4373336062a8e244d5bc5fdde8bc366d77fbff"
+  integrity sha512-i7boSidmrUQmAIOF0vVHJJ9M3cCpAmnf7/d1BsMs4u1K3fm42VpVGilVmFCZu2SsneS7Wi9O+6XbIMOeuo5SHg==
+  dependencies:
+    "@rollup/pluginutils" "^4.1.0"
+
 rollup-plugin-terser@^7.0.2:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/rollup-plugin-terser/-/rollup-plugin-terser-7.0.2.tgz#e8fbba4869981b2dc35ae7e8a502d5c6c04d324d"
@@ -5840,11 +5847,6 @@ rollup-plugin-vue@^6.0.0:
     debug "^4.1.1"
     hash-sum "^2.0.0"
     rollup-pluginutils "^2.8.2"
-
-rollup-plugin-web-worker-loader@^1.3.1:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-web-worker-loader/-/rollup-plugin-web-worker-loader-1.4.0.tgz#b4fd711118758c2111c30e794e2f2757b75a27b8"
-  integrity sha512-jhlOwSkrXkAVFY2Fded0M1AS9iqZDNjUJxNz4BFjBlaKuUzTx8Ikey+b3LSegUJE4mzAAw2DqJD8pX12R0ZdDw==
 
 rollup-pluginutils@^2.8.2:
   version "2.8.2"
