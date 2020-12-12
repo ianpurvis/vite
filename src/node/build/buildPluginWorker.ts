@@ -32,16 +32,18 @@ export const createWorkerBuildPlugin = ({
     transform(code, id) {
       if (!filter(id)) return
 
-      const [url] = injectAssetRe.exec(code) || []
+      let [url, referenceId] = injectAssetRe.exec(code) || []
 
-      if (!url) {
+      if (!referenceId) {
         this.error(`Could not transform '${id}' into worker`)
+      } else {
+        url = `import.meta.VITE_INLINABLE_URL_${referenceId}`
       }
 
       return `
 import initWorker from "${workerHelper.id}"
 export default function WrappedWorker() {
-  return initWorker(${JSON.stringify(url)})
+  return initWorker(${url})
 }
 `
     }

@@ -35,6 +35,7 @@ import hash_sum from 'hash-sum'
 import { resolvePostcssOptions, isCSSRequest } from '../utils/cssUtils'
 import { createBuildWasmPlugin } from './buildPluginWasm'
 import { createWorkerBuildPlugin } from './buildPluginWorker'
+import { createInlineBuildPlugin } from './buildPluginInline'
 import { createBuildManifestPlugin } from './buildPluginManifest'
 import { stopService } from '../esbuildService'
 
@@ -548,6 +549,12 @@ async function doBuild(options: Partial<BuildConfig>): Promise<BuildResult[]> {
         assetsDir,
         assetsInlineLimit
       ),
+      // vite:inline
+      createInlineBuildPlugin({
+        publicBasePath,
+        assetsDir,
+        maxBytes: assetsInlineLimit
+      }),
       config.enableEsbuild &&
         createEsbuildRenderChunkPlugin(
           config.esbuildTarget,
