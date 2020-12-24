@@ -1,16 +1,17 @@
-import { msg } from './workerImport'
+import inlinableAssetPath from './inlinable-asset.txt'
+import { fetchAsset } from './fetch-asset'
 
 self.onmessage = async ({ data }) => {
   if (data !== 'test') return
 
   Promise.all([
     self.postMessage({
-      key: 'response',
-      value: msg
-    }),
-    self.postMessage({
       key: 'protocol',
       value: self.location.protocol
+    }),
+    self.postMessage({
+      key: 'inlinableAssetContent',
+      value: await fetchAsset(inlinableAssetPath)
     })
   ])
 }

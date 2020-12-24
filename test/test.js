@@ -694,10 +694,6 @@ describe('vite', () => {
     describe('web workers', () => {
       beforeAll(async () => click('.test-worker'))
 
-      test('should support module imports', async () => {
-        await expectByPolling(() => getText('.worker-response'), 'pong')
-      })
-
       if (isBuild) {
         test('should be inlined', async () => {
           await expectByPolling(() => getText('.worker-protocol'), 'blob:')
@@ -707,6 +703,13 @@ describe('vite', () => {
           await expectByPolling(() => getText('.worker-protocol'), 'http:')
         })
       }
+
+      test('should support inline assets', async () => {
+        await expectByPolling(
+          () => getText('.worker-inlinable-asset-content'),
+          'pong'
+        )
+      })
     })
 
     test('importing wasm', async () => {

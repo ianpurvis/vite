@@ -3,10 +3,11 @@
   <p>
     <button class="test-worker" @click="test">Click to test worker</button>
     <dl>
-      <dt>Response should be "pong" -> </dt>
-      <dd class="worker-response">{{ result.response }}</dd>
       <dt>Protocol should be "http:" when served and "blob:" when built -> </dt>
       <dd class="worker-protocol">{{ result.protocol }}</dd>
+
+      <dt>Inlinable asset content should be "pong" -> </dt>
+      <dd class="worker-inlinable-asset-content">{{ result.inlinableAssetContent }}</dd>
     </dl>
   </p>
 </template>
@@ -18,8 +19,8 @@ import Worker from './worker?worker'
 export default {
   setup() {
     const result = reactive({
-      response: null,
-      protocol: null
+      protocol: null,
+      inlinableAssetContent: null
     })
 
     const worker = new Worker()

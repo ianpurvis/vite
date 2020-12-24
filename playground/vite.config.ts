@@ -7,6 +7,7 @@ const config: UserConfig = {
     alias: '/alias/aliased',
     '/@alias/': require('path').resolve(__dirname, 'alias/aliased-dir')
   },
+  assetsInclude: (file) => file.endsWith('.txt'),
   define: {
     __VALUE__: 'value'
   },
