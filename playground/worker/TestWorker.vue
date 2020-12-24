@@ -1,30 +1,35 @@
 <template>
   <h2>Inline Web Worker</h2>
   <p>
-    <button class="worker-send" @click="send">Click to ping worker</button>
-    <span class="worker-response">{{ res }}</span>
+    <button class="test-worker" @click="test">Click to test worker</button>
+    <dl>
+      <dt>Response should be "pong" -> </dt>
+      <dd class="worker-response">{{ result.response }}</dd>
+    </dl>
   </p>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { reactive } from 'vue'
 import Worker from './worker?worker'
 
 export default {
   setup() {
-    const worker = new Worker()
-    const res = ref()
-
-    worker.addEventListener('message', (e) => {
-      res.value = `Message from worker: ${e.data}`
+    const result = reactive({
+      response: null
     })
 
-    return {
-      res,
-      send() {
-        worker.postMessage('ping')
-      }
+    const worker = new Worker()
+
+    function test() {
+      worker.postMessage('test')
     }
+
+    worker.addEventListener('message', ({ data: { key, value } }) => {
+      result[key] = value
+    })
+
+    return { test, result }
   }
 }
 </script>

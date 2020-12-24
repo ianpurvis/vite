@@ -1,7 +1,7 @@
 import { msg } from './workerImport'
 
-self.onmessage = (e) => {
-  if (e.data === 'ping') {
-    self.postMessage(msg)
+self.onmessage = ({ data }) => {
+  if (data === 'test') {
+    self.postMessage({ key: 'response', value: msg })
   }
 }

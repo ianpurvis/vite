@@ -691,9 +691,12 @@ describe('vite', () => {
       expect(await getText(`.dynamic-import-two`)).toMatch(`Two`)
     })
 
-    test('importing web worker', async () => {
-      await click('.worker-send')
-      await expectByPolling(() => getText('.worker-response'), 'pong')
+    describe('web workers', () => {
+      beforeAll(async () => click('.test-worker'))
+
+      test('should support module imports', async () => {
+        await expectByPolling(() => getText('.worker-response'), 'pong')
+      })
     })
 
     test('importing wasm', async () => {
