@@ -697,6 +697,16 @@ describe('vite', () => {
       test('should support module imports', async () => {
         await expectByPolling(() => getText('.worker-response'), 'pong')
       })
+
+      if (isBuild) {
+        test('should be inlined', async () => {
+          await expectByPolling(() => getText('.worker-protocol'), 'blob:')
+        })
+      } else {
+        test('should not be inlined', async () => {
+          await expectByPolling(() => getText('.worker-protocol'), 'http:')
+        })
+      }
     })
 
     test('importing wasm', async () => {

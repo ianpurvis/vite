@@ -1,7 +1,16 @@
 import { msg } from './workerImport'
 
-self.onmessage = ({ data }) => {
-  if (data === 'test') {
-    self.postMessage({ key: 'response', value: msg })
-  }
+self.onmessage = async ({ data }) => {
+  if (data !== 'test') return
+
+  Promise.all([
+    self.postMessage({
+      key: 'response',
+      value: msg
+    }),
+    self.postMessage({
+      key: 'protocol',
+      value: self.location.protocol
+    })
+  ])
 }

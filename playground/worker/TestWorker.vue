@@ -5,6 +5,8 @@
     <dl>
       <dt>Response should be "pong" -> </dt>
       <dd class="worker-response">{{ result.response }}</dd>
+      <dt>Protocol should be "http:" when served and "blob:" when built -> </dt>
+      <dd class="worker-protocol">{{ result.protocol }}</dd>
     </dl>
   </p>
 </template>
@@ -16,7 +18,8 @@ import Worker from './worker?worker'
 export default {
   setup() {
     const result = reactive({
-      response: null
+      response: null,
+      protocol: null
     })
 
     const worker = new Worker()
